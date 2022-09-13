@@ -1,0 +1,30 @@
+image: busybox:latest
+
+parameters:
+  - name: selectFileExtension
+    displayName: Select file extension
+    type: string
+    values:
+    - Python
+    - Java
+
+variables:
+  - name: fileName
+    ${{ if eq(parameters.selectFileExtension, 'Python') }}:
+      value: 'test.py'
+    ${{ elseif eq(parameters.selectFileExtension, 'Java') }}:
+      value: 'test.java'
+    ${{ else }}:
+      value: 'something-else.js'  
+
+before_script:
+  - echo "Integration test pipeline has been started"
+
+stages:
+  - integrationtest
+
+test:
+  stage: integrationtest
+  script: 
+    - echo ${{variables.fileName}}
+  when: manual
